@@ -12,14 +12,14 @@
     <div class="row">
       <div class="col-md-6">
         <ul class="list-group">
-          <li v-for="employee of employees" :key="employee.id" class="list-group-item list-group-item-success">
-            <input @change="updateSelected(employee.id)" class="form-check-input" type="checkbox">
+          <li v-for="employee of employeeState.employees" :key="employee.id" class="list-group-item list-group-item-success">
+            <input @change="updateSelected(employee.id)" :checked="employee.isSelected" class="form-check-input" type="checkbox">
            {{ employee.name }} 
           </li>
         </ul>
       </div>
       <div class="col-md-6">
-        <div v-for="employee of employees" :key="employee.id">
+        <div v-for="employee of employeeState.employees" :key="employee.id">
           <div class="card my-2" v-if="employee?.isSelected">
             <div class="card-body list-group-item-success">
               <ul class="list-group">
@@ -37,54 +37,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
-  name: "EmployeesComponent",
-  data: function() {
-    return {
-      employees: [
-        {
-          "id": 1,
-          "name": "Ryan",
-          "username": "aryan",
-          "email": "ryan@email.com",
-          "isSelected": false
-        },
-        {
-          "id": 2,
-          "name": "Jeff",
-          "username": "jeffdelaney",
-          "email": "jeffdelaney@gg.com",
-          "isSelected": false
-        },
-        {
-          "id": 3,
-          "name": "Brad",
-          "username": "bradtraversy",
-          "email": "bradtraversy@code.com",
-          "isSelected": false
-        },
-        {
-          "id": 4,
-          "name": "Dev Ed",
-          "username": "eddie",
-          "email": "devEd@dev.com",
-          "isSelected": false
-        },
-      ]
-    }
-  },
+  name: "VuexEmployeesComponent",
   methods: {
     updateSelected: function(employeeId) {
-      this.employees = this.employees.map(employee => {
-        if (employee.id === employeeId) {
-          return {
-            ...employee,
-            isSelected: !employee.isSelected
-          }
-        } else return employee;
-      })
+      this.$store.dispatch("employee/changeSelected", {employeeId: employeeId})
     }
-  }
+  },
+  computed: mapGetters({
+    employeeState: "getEmployeeState"
+  })
 }
 </script>
 
