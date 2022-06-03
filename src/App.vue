@@ -7,7 +7,9 @@
 import NavBarComponent from '@/components/NavBarComponent'
 
 export default {
-  components: { NavBarComponent }
+  components: { 
+    NavBarComponent,
+  }
 }
 </script>
 

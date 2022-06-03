@@ -2,13 +2,13 @@
   <div class="container mt-3">
     <div class="row">
       <div class="col">
-        <p class="fst-itatic h3 text-success">User List</p>
+        <p class="fst-itatic h3 text-success">User List from</p>
         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis veniam eveniet atque magnam. Rerum quae fugit quia sunt temporibus, quibusdam debitis possimus voluptatem, laudantium, numquam suscipit facilis corrupti non libero.</p>
       </div>
     </div>
   </div>
 
-  <div v-if="loading" class="container">
+  <div v-if="userState.loading" class="container">
     <div class="row">
       <div class="col">
         <SpinnerComponent/>
@@ -16,10 +16,10 @@
     </div>
   </div>
 
-  <div v-if="!loading && errorMessage" class="container">
+  <div v-if="!userState.loading && userState.users.length <= 0" class="container">
     <div class="">
       <div class="col">
-        <p class="fw-bold text-danger"> {{ errorMessage }} </p>
+        <p class="fw-bold text-danger"> {{ userState }} </p>
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in users" :key="user.id">
+            <tr v-for="user in userState.users" :key="user.id">
               <td>{{user.id}}</td>
               <td>{{user.name}}</td>
               <td>{{user.email}}</td>
@@ -55,32 +55,18 @@
 </template>
 
 <script>
-import axios from 'axios';
-import SpinnerComponent from './SpinnerComponent.vue';
+import SpinnerComponent from '../SpinnerComponent.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   components: { SpinnerComponent },
-  name: "UserListComponent",
-  data: function () {
-      return {
-          loading: false,
-          users: [],
-          errorMessage: null
-      };
+  name: "VuexUserListComponent",
+  created: function () {
+    this.$store.dispatch("users/getUsers");
   },
-  created: async function () {
-      try {
-          this.loading = true;
-          let dataURL = `https://jsonplaceholder.typicode.com/users`;
-          let response = await axios.get(dataURL);
-          this.users = response.data;
-          this.loading = false;
-      }
-      catch (error) {
-          this.loading = false;
-          this.errorMessage = error;
-      }
-  }
+  computed: mapGetters({
+    userState: "getUserState"
+  })
 }
 </script>
 
